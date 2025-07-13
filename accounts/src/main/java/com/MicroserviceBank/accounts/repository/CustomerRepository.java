@@ -1,4 +1,4 @@
-package com.MicroserviceBank.accounts.Repository;
+package com.MicroserviceBank.accounts.repository;
 
 import com.MicroserviceBank.accounts.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;

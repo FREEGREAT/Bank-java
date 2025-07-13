@@ -1,8 +1,8 @@
 package com.MicroserviceBank.accounts.service.impl;
 
 
-import com.MicroserviceBank.accounts.Repository.AccountsRepository;
-import com.MicroserviceBank.accounts.Repository.CustomerRepository;
+import com.MicroserviceBank.accounts.repository.AccountsRepository;
+import com.MicroserviceBank.accounts.repository.CustomerRepository;
 import com.MicroserviceBank.accounts.constants.AccountsConstants;
 import com.MicroserviceBank.accounts.dto.AccountsDTO;
 import com.MicroserviceBank.accounts.dto.CustomerDTO;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static com.MicroserviceBank.accounts.mapper.AccountsMapper.mapToAccounts;
 import static com.MicroserviceBank.accounts.mapper.CustomerMapper.mapToCustomerDTO;
@@ -88,23 +87,14 @@ public class AccountServiceImpl implements IAccountService {
         return result;
     }
 
+    @Override
     public boolean deleteAccount(String mobileNumber) {
-        boolean result = false;
-        Optional<Customer> optionalCustomer = customerRepository.findByMobileNumber(mobileNumber);
-        if (optionalCustomer.isPresent()) {
-            CustomerDTO customerDTO = fetchAccountDetail(mobileNumber);
-            AccountsDTO accountsDTO = customerDTO.getAccountsDTO();
-
-            Accounts accounts = mapToAccounts(accountsDTO, new Accounts());
-
-            customerRepository.delete(optionalCustomer.get());
-
-            accountsRepository.delete(accounts);
-            result = true;
-        }
-
-
-        return result;
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber" ,mobileNumber)
+        );
+        accountsRepository.deleteByCustomerId(customer.getCustomerId());
+        customerRepository.delete(customer);
+        return true;
     }
 
     private Accounts createNewAccount(Customer customer) {
