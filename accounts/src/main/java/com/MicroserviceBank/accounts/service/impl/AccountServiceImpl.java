@@ -16,7 +16,7 @@ import com.MicroserviceBank.accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+
 import java.util.Optional;
 import java.util.Random;
 
@@ -36,8 +36,6 @@ public class AccountServiceImpl implements IAccountService {
         if (optionalCustomer.isPresent()) {
             throw new CustomerAlreadyExsitsException("Customer already exists with this mobileNumber" + customerDTO.getMobileNumber());
         }
-        customer.setCreatedAt(LocalDateTime.now());
-        customer.setCreatedBy("User");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
     }
@@ -69,8 +67,6 @@ public class AccountServiceImpl implements IAccountService {
                     () -> new ResourceNotFoundException("Account", "accountNumber" ,accountsDTO.getAccountNumber().toString())
             );
             mapToAccounts(accountsDTO, accounts);
-            accounts.setUpdatedAt(LocalDateTime.now());
-            accounts.setUpdatedBy("User");
             accounts = accountsRepository.save(accounts);
 
             Long customerId = accounts.getCustomerId();
@@ -78,8 +74,6 @@ public class AccountServiceImpl implements IAccountService {
                     () -> new ResourceNotFoundException("Customer", "customerId" ,customerId.toString())
             );
             CustomerMapper.mapToCustomer(customerDTO, customer);
-            customer.setUpdatedAt(LocalDateTime.now());
-            customer.setUpdatedBy("User");
             customerRepository.save(customer);
             result = true;
         }
@@ -105,8 +99,6 @@ public class AccountServiceImpl implements IAccountService {
         accounts.setAccountNumber(randomAccNumber);
         accounts.setAccountType(AccountsConstants.SAVGINS);
         accounts.setBranchAddress(AccountsConstants.ADDRESS);
-        accounts.setCreatedAt(LocalDateTime.now());
-        accounts.setCreatedBy("User");
         return accounts;
     }
 

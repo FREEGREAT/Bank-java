@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS customer(
     customer_id int AUTO_INCREMENT PRIMARY KEY NOT NULL ,
     name varchar(100) NOT NULL ,
     email varchar(256) NOT NULL ,
-    mobile_number varchar(12) NOT NULL ,
+    mobile_number varchar(11) NOT NULL ,
     created_at date NOT NULL ,
     created_by varchar(20) NOT NULL ,
     updated_at datetime DEFAULT NULL,
